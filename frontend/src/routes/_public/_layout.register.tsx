@@ -35,7 +35,7 @@ function Register() {
         password,
       });
 
-      if (res.status === 200) {
+      if (res.status === 201) {
         dispatch(login(res.data.user));
         navigate({ to: "/dashboard" });
       }

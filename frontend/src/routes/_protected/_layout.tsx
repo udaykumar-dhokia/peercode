@@ -10,6 +10,8 @@ import ProtectedHeader from "../../components/custom/header/ProtectedHeader";
 import { store } from "../../store/store";
 import { login } from "../../store/slices/user.slice";
 import { persistData } from "../../hooks/auth";
+import { useState } from "react";
+import ChallengeDrawer from "../../components/custom/drawers/ChallengeDrawer";
 
 export const Route = createFileRoute("/_protected/_layout")({
   component: RouteComponent,
@@ -34,18 +36,25 @@ function RouteComponent() {
   const current = segments[segments.length - 1] || "Dashboard";
 
   const title = current.charAt(0).toUpperCase() + current.slice(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <>
-      <SidebarProvider>
-        <AppSidebar />
-        <main className="p-4 w-full min-h-screen flex flex-col">
+      <SidebarProvider className={`relative w-full h-screen overflow-hidden`}>
+        <AppSidebar
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
+        />
+        <main
+          className={` ${isDialogOpen ? "blur-xs" : ""} p-4 w-full min-h-screen flex flex-col`}
+        >
           <div className="gap-4">
             <SidebarTrigger className="hover:cursor-pointer" />
             <ProtectedHeader slug={title} />
           </div>
           <Outlet />
         </main>
+        {isDialogOpen && <ChallengeDrawer setIsDialogOpen={setIsDialogOpen} />}
       </SidebarProvider>
     </>
   );

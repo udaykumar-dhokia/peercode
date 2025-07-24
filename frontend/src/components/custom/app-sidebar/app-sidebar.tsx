@@ -23,6 +23,11 @@ import { Button } from "../../ui/button";
 import { logout } from "../../../store/slices/user.slice";
 import axiosInstance from "../../../utils/axiosInstance";
 
+type AppSidebarProps = {
+  isDialogOpen: boolean;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 const items = [
   {
     title: "Dashboard",
@@ -51,7 +56,7 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ isDialogOpen, setIsDialogOpen }: AppSidebarProps) {
   const { user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -61,7 +66,7 @@ export function AppSidebar() {
     navigate({ to: "/login" });
   };
   return (
-    <Sidebar>
+    <Sidebar className={` ${isDialogOpen ? "blur-xs" : ""}`}>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="my-4">
@@ -72,7 +77,10 @@ export function AppSidebar() {
             </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <Button className="w-full mb-4 hover:cursor-pointer rounded-xl bg-black/90 inset-shadow-sm inset-shadow-white/60">
+            <Button
+              onClick={() => setIsDialogOpen(!isDialogOpen)}
+              className="w-full mb-4 hover:cursor-pointer rounded-xl bg-black/90 inset-shadow-sm inset-shadow-white/60"
+            >
               <Icons.Plus /> Create Challenge
             </Button>
             <SidebarMenu>
