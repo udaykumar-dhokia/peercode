@@ -6,6 +6,8 @@ import { motion } from "motion/react";
 import SocialAuthOptions from "../../components/custom/social-auth-options/SocialAuthOptions";
 import { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/slices/user.slice";
 
 export const Route = createFileRoute("/_public/_layout/login")({
   component: Login,
@@ -17,6 +19,7 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState<boolean | null>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const loginUser = async () => {
     if (!email || !password) {
       return;
@@ -31,6 +34,7 @@ function Login() {
       });
 
       if (res.status === 200) {
+        dispatch(login(res.data.user));
         navigate({ to: "/dashboard" });
       }
     } catch (error: any) {

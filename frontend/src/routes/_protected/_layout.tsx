@@ -6,6 +6,9 @@ import {
 import { AppSidebar } from "../../components/custom/app-sidebar/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar";
 import ProtectedHeader from "../../components/custom/header/ProtectedHeader";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
+import type { UserState } from "../../store/slices/user.slice";
 
 export const Route = createFileRoute("/_protected/_layout")({
   component: RouteComponent,
@@ -22,6 +25,8 @@ function RouteComponent() {
   const current = segments[segments.length - 1] || "Dashboard";
 
   const title = current.charAt(0).toUpperCase() + current.slice(1);
+
+  const userData: UserState = useSelector((state: RootState) => state.user);
 
   return (
     <>
