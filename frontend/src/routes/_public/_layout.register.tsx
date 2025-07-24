@@ -29,6 +29,7 @@ function Register() {
           <SocialAuthOptions />
           <Label>Full Name</Label>
           <Input
+            className="rounded-xl"
             placeholder="John De"
             onChange={(e) => {
               setFullName(e.target.value);
@@ -36,6 +37,7 @@ function Register() {
           />
           <Label>Email</Label>
           <Input
+            className="rounded-xl"
             placeholder="john@example.com"
             onChange={(e) => {
               setEmail(e.target.value);
@@ -43,6 +45,7 @@ function Register() {
           />
           <Label>Password</Label>
           <Input
+            className="rounded-xl"
             placeholder="********"
             onChange={(e) => {
               setPassword(e.target.value);
@@ -50,7 +53,7 @@ function Register() {
           />
           <Link to="/" className="" disabled={!email || !password || !fullName}>
             <Button
-              className="w-full hover:cursor-pointer"
+              className="w-full hover:cursor-pointer rounded-xl bg-black/90 inset-shadow-sm inset-shadow-white/60"
               disabled={!email || !password || !fullName}
             >
               Get Started
@@ -58,7 +61,7 @@ function Register() {
           </Link>
           <p className="mt-4 text-center">
             Already have an account?{" "}
-            <Link to="/auth/login" className="text-second">
+            <Link to="/login" className="text-second">
               Login Now
             </Link>
           </p>

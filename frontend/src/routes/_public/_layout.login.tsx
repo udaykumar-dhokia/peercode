@@ -1,4 +1,9 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router";
 import { Label } from "../../components/ui/label";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -8,9 +13,16 @@ import { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/user.slice";
+import { persistData } from "../../hooks/persist-auth";
 
 export const Route = createFileRoute("/_public/_layout/login")({
   component: Login,
+  beforeLoad: async () => {
+    const user = await persistData();
+    if (user) {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
 });
 
 function Login() {
@@ -60,6 +72,7 @@ function Login() {
 
           <Label>Email</Label>
           <Input
+            className="rounded-xl"
             type="email"
             placeholder="john@example.com"
             onChange={(e) => {
@@ -68,6 +81,7 @@ function Login() {
           />
           <Label>Password</Label>
           <Input
+            className="rounded-xl"
             type="password"
             placeholder="********"
             onChange={(e) => {
@@ -79,7 +93,7 @@ function Login() {
           <Button
             onClick={loginUser}
             disabled={!email || !password}
-            className="w-full hover:cursor-pointer"
+            className="w-full hover:cursor-pointer rounded-xl bg-black/90 inset-shadow-sm inset-shadow-white/60"
           >
             {loading ? (
               <div className="">

@@ -49,12 +49,17 @@ const PublicHeader = () => {
         </motion.div>
         <div className="auth-options flex gap-2">
           <Link to={"/login"}>
-            <Button className="hover:cursor-pointer" variant={"outline"}>
+            <Button
+              className="hover:cursor-pointer rounded-xl bg-white/90 inset-shadow-sm inset-shadow-white/60"
+              variant={"outline"}
+            >
               Login
             </Button>
           </Link>
           <Link to={"/register"}>
-            <Button className="hover:cursor-pointer">Get Started</Button>
+            <Button className="hover:cursor-pointer rounded-xl bg-black/90 inset-shadow-sm inset-shadow-white/60">
+              Get Started
+            </Button>
           </Link>
         </div>
       </motion.nav>

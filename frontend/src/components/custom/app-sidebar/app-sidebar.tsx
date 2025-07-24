@@ -22,7 +22,7 @@ import { Icons } from "../../../assets/icons/icons";
 
 const items = [
   {
-    title: "Home",
+    title: "Dashboard",
     url: "/dashboard",
     icon: Icons.Home,
   },

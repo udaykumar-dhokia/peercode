@@ -1,19 +1,28 @@
 import {
   createFileRoute,
   Outlet,
+  redirect,
   useRouterState,
 } from "@tanstack/react-router";
 import { AppSidebar } from "../../components/custom/app-sidebar/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar";
 import ProtectedHeader from "../../components/custom/header/ProtectedHeader";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../store/store";
-import type { UserState } from "../../store/slices/user.slice";
+import { store } from "../../store/store";
+import { login } from "../../store/slices/user.slice";
+import { persistData } from "../../hooks/persist-auth";
 
 export const Route = createFileRoute("/_protected/_layout")({
   component: RouteComponent,
-  beforeLoad: ({}) => {
+  beforeLoad: async () => {
     document.title = "PeerCode";
+
+    const user = await persistData();
+
+    if (!user) {
+      throw redirect({ to: "/login" });
+    }
+
+    store.dispatch(login(user));
   },
 });
 
@@ -26,14 +35,12 @@ function RouteComponent() {
 
   const title = current.charAt(0).toUpperCase() + current.slice(1);
 
-  const userData: UserState = useSelector((state: RootState) => state.user);
-
   return (
     <>
       <SidebarProvider>
         <AppSidebar />
-        <main>
-          <div className="flex items-center my-4 gap-4">
+        <main className="p-4">
+          <div className="flex items-center gap-4">
             <SidebarTrigger />
             <ProtectedHeader slug={title} />
           </div>
