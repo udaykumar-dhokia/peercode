@@ -80,6 +80,21 @@ const AuthController = {
         .json({ message: "Internal Server Error." });
     }
   },
+  logout: async (req, res) => {
+    try {
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+      });
+
+      return res.status(HttpStatus.OK).json({ message: "Logout successful." });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to log out." });
+    }
+  },
 };
 
 export default AuthController;

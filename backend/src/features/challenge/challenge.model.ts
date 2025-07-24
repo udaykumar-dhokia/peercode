@@ -12,6 +12,7 @@ const challengeSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "rejected"],
       default: "pending",
     },
+    isCompleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,

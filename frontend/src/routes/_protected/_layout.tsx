@@ -9,7 +9,7 @@ import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar";
 import ProtectedHeader from "../../components/custom/header/ProtectedHeader";
 import { store } from "../../store/store";
 import { login } from "../../store/slices/user.slice";
-import { persistData } from "../../hooks/persist-auth";
+import { persistData } from "../../hooks/auth";
 
 export const Route = createFileRoute("/_protected/_layout")({
   component: RouteComponent,
@@ -39,9 +39,9 @@ function RouteComponent() {
     <>
       <SidebarProvider>
         <AppSidebar />
-        <main className="p-4">
-          <div className="flex items-center gap-4">
-            <SidebarTrigger />
+        <main className="p-4 w-full min-h-screen flex flex-col">
+          <div className="gap-4">
+            <SidebarTrigger className="hover:cursor-pointer" />
             <ProtectedHeader slug={title} />
           </div>
           <Outlet />

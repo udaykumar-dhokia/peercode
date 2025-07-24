@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import axiosInstance from "../utils/axiosInstance";
 
 export const persistData = async () => {
@@ -8,3 +9,5 @@ export const persistData = async () => {
     return null;
   }
 };
+
+export const removeAuthToken = () => Cookies.remove("token");

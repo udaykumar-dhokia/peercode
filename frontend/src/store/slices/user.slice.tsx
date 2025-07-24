@@ -1,8 +1,33 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-type UserType = {
+// Properly typed User
+export type UserType = {
+  _id: string;
   fullName: string;
   email: string;
+  avatar?: string;
+  rating: number;
+  rank: string;
+
+  social: {
+    linkedin?: string;
+    x?: string;
+    github?: string;
+    reddit?: string;
+  };
+
+  stats: {
+    totalMatches: number;
+    wins: number;
+    losses: number;
+    draws: number;
+    problemsSolved: number;
+    winStreak: number;
+    maxStreak: number;
+  };
+
+  createdAt: string;
+  lastActive: string;
 };
 
 export interface UserState {
@@ -19,7 +44,7 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    login: (state, action) => {
+    login: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
       state.isAuthenticated = true;
     },

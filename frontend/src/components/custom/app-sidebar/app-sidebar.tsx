@@ -1,5 +1,3 @@
-import { Calendar, ChevronRight, Inbox, Search, User2 } from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -17,8 +15,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Icons } from "../../../assets/icons/icons";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../../store/store";
+import { Button } from "../../ui/button";
+import { logout } from "../../../store/slices/user.slice";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const items = [
   {
@@ -27,19 +30,19 @@ const items = [
     icon: Icons.Home,
   },
   {
+    title: "Challenges",
+    url: "#",
+    icon: Icons.Code,
+  },
+  {
     title: "Inbox",
     url: "#",
-    icon: Inbox,
+    icon: Icons.Mail,
   },
   {
-    title: "Calendar",
+    title: "Profile",
     url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
+    icon: Icons.Profile,
   },
   {
     title: "Settings",
@@ -49,6 +52,14 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const { user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    await axiosInstance.post("/auth/logout");
+    dispatch(logout());
+    navigate({ to: "/login" });
+  };
   return (
     <Sidebar>
       <SidebarContent>
@@ -61,6 +72,9 @@ export function AppSidebar() {
             </div>
           </SidebarGroupLabel>
           <SidebarGroupContent>
+            <Button className="w-full mb-4 hover:cursor-pointer rounded-xl bg-black/90 inset-shadow-sm inset-shadow-white/60">
+              <Icons.Plus /> Create Challenge
+            </Button>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
@@ -81,9 +95,9 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> Username
-                  <ChevronRight className="ml-auto" />
+                <SidebarMenuButton className="outline-none ring-0">
+                  <Icons.Profile /> {user?.fullName}
+                  <Icons.DiagonalArrow />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -97,7 +111,7 @@ export function AppSidebar() {
                   <span>Billing</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <span>Sign out</span>
+                  <span onClick={handleLogout}>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

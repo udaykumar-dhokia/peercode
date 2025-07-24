@@ -20,6 +20,26 @@ const userSchema = new mongoose.Schema({
     github: { type: String },
     reddit: { type: String },
   },
+  avatar: {
+    type: String,
+    default: "",
+  },
+  rating: {
+    type: Number,
+    default: 1000,
+  },
+  rank: {
+    type: String,
+    default: "Novice",
+  },
+  stats: {
+    totalMatches: { type: Number, default: 0 },
+    wins: { type: Number, default: 0 },
+    losses: { type: Number, default: 0 },
+    draws: { type: Number, default: 0 },
+    winStreak: { type: Number, default: 0 },
+    maxStreak: { type: Number, default: 0 },
+  },
 });
 
 const User = mongoose.model("User", userSchema);

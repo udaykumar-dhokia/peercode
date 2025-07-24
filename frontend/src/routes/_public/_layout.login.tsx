@@ -13,7 +13,7 @@ import { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/user.slice";
-import { persistData } from "../../hooks/persist-auth";
+import { persistData } from "../../hooks/auth";
 
 export const Route = createFileRoute("/_public/_layout/login")({
   component: Login,
