@@ -1,6 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-// Properly typed User
 export type UserType = {
   _id: string;
   fullName: string;

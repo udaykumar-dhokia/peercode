@@ -15,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Icons } from "../../../assets/icons/icons";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
@@ -36,7 +36,7 @@ const items = [
   },
   {
     title: "Challenges",
-    url: "#",
+    url: "/challenges",
     icon: Icons.Code,
   },
   {
@@ -65,6 +65,7 @@ export function AppSidebar({ isDialogOpen, setIsDialogOpen }: AppSidebarProps) {
     dispatch(logout());
     navigate({ to: "/login" });
   };
+  const pathname = useLocation({ select: (location) => location.pathname });
   return (
     <Sidebar className={` ${isDialogOpen ? "blur-xs" : ""}`}>
       <SidebarContent>
@@ -85,12 +86,15 @@ export function AppSidebar({ isDialogOpen, setIsDialogOpen }: AppSidebarProps) {
             </Button>
             <SidebarMenu>
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem
+                  key={item.title}
+                  className={`${pathname == item.url ? "bg-second/20" : ""} rounded-xl`}
+                >
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

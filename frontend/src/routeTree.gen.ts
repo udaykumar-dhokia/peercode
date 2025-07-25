@@ -16,6 +16,7 @@ import { Route as PublicLayoutRegisterRouteImport } from './routes/_public/_layo
 import { Route as PublicLayoutLoginRouteImport } from './routes/_public/_layout.login'
 import { Route as PublicLayoutAboutRouteImport } from './routes/_public/_layout.about'
 import { Route as ProtectedLayoutDashboardRouteImport } from './routes/_protected/_layout.dashboard'
+import { Route as ProtectedLayoutChallengesRouteImport } from './routes/_protected/_layout.challenges'
 
 const PublicLayoutRoute = PublicLayoutRouteImport.update({
   id: '/_public/_layout',
@@ -51,8 +52,15 @@ const ProtectedLayoutDashboardRoute =
     path: '/dashboard',
     getParentRoute: () => ProtectedLayoutRoute,
   } as any)
+const ProtectedLayoutChallengesRoute =
+  ProtectedLayoutChallengesRouteImport.update({
+    id: '/challenges',
+    path: '/challenges',
+    getParentRoute: () => ProtectedLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
+  '/challenges': typeof ProtectedLayoutChallengesRoute
   '/dashboard': typeof ProtectedLayoutDashboardRoute
   '/about': typeof PublicLayoutAboutRoute
   '/login': typeof PublicLayoutLoginRoute
@@ -60,6 +68,7 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicLayoutIndexRoute
 }
 export interface FileRoutesByTo {
+  '/challenges': typeof ProtectedLayoutChallengesRoute
   '/dashboard': typeof ProtectedLayoutDashboardRoute
   '/about': typeof PublicLayoutAboutRoute
   '/login': typeof PublicLayoutLoginRoute
@@ -70,6 +79,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_protected/_layout': typeof ProtectedLayoutRouteWithChildren
   '/_public/_layout': typeof PublicLayoutRouteWithChildren
+  '/_protected/_layout/challenges': typeof ProtectedLayoutChallengesRoute
   '/_protected/_layout/dashboard': typeof ProtectedLayoutDashboardRoute
   '/_public/_layout/about': typeof PublicLayoutAboutRoute
   '/_public/_layout/login': typeof PublicLayoutLoginRoute
@@ -78,13 +88,20 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/dashboard' | '/about' | '/login' | '/register' | '/'
+  fullPaths:
+    | '/challenges'
+    | '/dashboard'
+    | '/about'
+    | '/login'
+    | '/register'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/dashboard' | '/about' | '/login' | '/register' | '/'
+  to: '/challenges' | '/dashboard' | '/about' | '/login' | '/register' | '/'
   id:
     | '__root__'
     | '/_protected/_layout'
     | '/_public/_layout'
+    | '/_protected/_layout/challenges'
     | '/_protected/_layout/dashboard'
     | '/_public/_layout/about'
     | '/_public/_layout/login'
@@ -148,14 +165,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedLayoutDashboardRouteImport
       parentRoute: typeof ProtectedLayoutRoute
     }
+    '/_protected/_layout/challenges': {
+      id: '/_protected/_layout/challenges'
+      path: '/challenges'
+      fullPath: '/challenges'
+      preLoaderRoute: typeof ProtectedLayoutChallengesRouteImport
+      parentRoute: typeof ProtectedLayoutRoute
+    }
   }
 }
 
 interface ProtectedLayoutRouteChildren {
+  ProtectedLayoutChallengesRoute: typeof ProtectedLayoutChallengesRoute
   ProtectedLayoutDashboardRoute: typeof ProtectedLayoutDashboardRoute
 }
 
 const ProtectedLayoutRouteChildren: ProtectedLayoutRouteChildren = {
+  ProtectedLayoutChallengesRoute: ProtectedLayoutChallengesRoute,
   ProtectedLayoutDashboardRoute: ProtectedLayoutDashboardRoute,
 }
 

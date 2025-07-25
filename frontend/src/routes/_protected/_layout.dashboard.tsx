@@ -5,10 +5,10 @@ import { Icons } from "../../assets/icons/icons";
 import type { JSX } from "react";
 
 export const Route = createFileRoute("/_protected/_layout/dashboard")({
-  component: RouteComponent,
+  component: Dashboard,
 });
 
-function RouteComponent() {
+function Dashboard() {
   const { user } = useSelector((state: RootState) => state.user);
 
   const renderSocialIcon = (Icon: JSX.Element, link?: string) => {

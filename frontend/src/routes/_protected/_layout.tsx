@@ -15,7 +15,7 @@ import ChallengeDrawer from "../../components/custom/drawers/ChallengeDrawer";
 import { Toaster } from "../../components/ui/sonner";
 
 export const Route = createFileRoute("/_protected/_layout")({
-  component: RouteComponent,
+  component: ProtectedLayout,
   beforeLoad: async () => {
     document.title = "PeerCode";
 
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/_protected/_layout")({
   },
 });
 
-function RouteComponent() {
+function ProtectedLayout() {
   const router = useRouterState();
   const pathname = router.location.pathname;
 
