@@ -13,6 +13,8 @@ import {
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { addChallenge } from "../../../store/slices/challenges.slice";
 
 type ChallengeDrawerProps = {
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -112,6 +114,7 @@ const ChallengeDrawer = ({ setIsDialogOpen }: ChallengeDrawerProps) => {
   const [checking, setChecking] = useState(false);
   const [opponentId, setOpponentId] = useState<string | null>(null);
   const [message, setMessage] = useState<string>("");
+  const dispatch = useDispatch();
 
   const handleCreateChallenge = async () => {
     if (!opponentId || !difficulty || !category) {
@@ -124,8 +127,10 @@ const ChallengeDrawer = ({ setIsDialogOpen }: ChallengeDrawerProps) => {
         difficulty: difficulty,
         duration: duration,
         note: message,
+        toEmail: opponentEmail,
       };
       const res = await axiosInstance.post("/challenge/create", payload);
+      dispatch(addChallenge(res.data.challenge));
       setIsDialogOpen(false);
       toast.success(res.data.message);
     } catch (error: any) {
@@ -189,7 +194,7 @@ const ChallengeDrawer = ({ setIsDialogOpen }: ChallengeDrawerProps) => {
       animate={{ x: 0 }}
       exit={{ x: "100%" }}
       transition={{ duration: 0.3 }}
-      className="absolute top-0 right-0 h-full w-[30vw] bg-neutral-100 shadow-sm z-50 p-4 border-l-2 flex flex-col gap-6 justify-between"
+      className="absolute top-0 right-0 h-[100vh] w-[30vw] bg-neutral-100 shadow-sm z-50 p-4 border-l-2 flex flex-col gap-6 justify-between"
     >
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-bold">

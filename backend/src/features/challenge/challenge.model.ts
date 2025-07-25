@@ -2,6 +2,18 @@ import mongoose from "mongoose";
 
 const challengeSchema = new mongoose.Schema(
   {
+    byEmail: {
+      type: String,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    toEmail: {
+      type: String,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     by: {
       type: mongoose.Types.ObjectId,
       required: true,

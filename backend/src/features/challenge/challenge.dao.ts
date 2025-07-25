@@ -9,13 +9,15 @@ class ChallengeDAO {
       difficulty: payload.difficulty,
       note: payload.note,
       duration: payload.duration,
+      byEmail: payload.byEmail,
+      toEmail: payload.toEmail,
     });
 
     return await challenge.save();
   }
 
   async getUserChallenges(id) {
-    const challenges = await Challenge.find({ by: id });
+    const challenges = await Challenge.find({ $or: [{ by: id }, { to: id }] });
     return challenges;
   }
 }

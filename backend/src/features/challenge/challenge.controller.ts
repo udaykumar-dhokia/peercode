@@ -10,9 +10,9 @@ const ChallengeController = {
         .json({ message: "Unauthorized." });
     }
 
-    const { to, difficulty, category, duration, note } = req.body;
+    const { to, difficulty, category, duration, note, toEmail } = req.body;
 
-    if (!to || !difficulty || !category || !duration) {
+    if (!to || !difficulty || !category || !duration || !toEmail) {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: "Missing required fields." });
@@ -26,6 +26,8 @@ const ChallengeController = {
         category: category,
         note: note,
         duration: duration,
+        byEmail: user.email,
+        toEmail: toEmail,
       });
       if (!challenge) {
         return res
