@@ -10,9 +10,9 @@ const ChallengeController = {
         .json({ message: "Unauthorized." });
     }
 
-    const { by, to, difficulty, category } = req.body;
+    const { to, difficulty, category, duration, note } = req.body;
 
-    if (!by || !to || !difficulty || !category) {
+    if (!to || !difficulty || !category || !duration) {
       return res
         .status(HttpStatus.BAD_REQUEST)
         .json({ message: "Missing required fields." });
@@ -20,10 +20,12 @@ const ChallengeController = {
 
     try {
       const challenge = await challengeDao.create({
-        by: by,
+        by: user._id,
         to: to,
         difficulty: difficulty,
         category: category,
+        note: note,
+        duration: duration,
       });
       if (!challenge) {
         return res
@@ -53,7 +55,7 @@ const ChallengeController = {
       if (!challenges) {
         return res.json({ message: "No active challenges.", challenges });
       }
-      return res.status(HttpStatus.OK).json({challenges});
+      return res.status(HttpStatus.OK).json({ challenges });
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

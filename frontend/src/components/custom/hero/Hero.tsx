@@ -6,7 +6,7 @@ const Hero = () => {
   return (
     <>
       <div className="">
-        <div className="text-center min-h-[120vh] flex flex-col justify-center gap-6">
+        <div className="text-center min-h-[100vh] flex flex-col justify-center gap-6">
           <motion.h1
             initial={{ y: 100, opacity: 0, filter: "blur(10px)" }}
             animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}

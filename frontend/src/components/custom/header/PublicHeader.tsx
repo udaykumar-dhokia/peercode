@@ -7,7 +7,7 @@ const PublicHeader = () => {
     { name: "Home", to: "/" },
     { name: "Explore", to: "/" },
     { name: "Challenges", to: "/" },
-    { name: "Learn More", to: "/" },
+    // { name: "Learn More", to: "/" },
   ];
   return (
     <>

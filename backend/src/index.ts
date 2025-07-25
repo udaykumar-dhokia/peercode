@@ -12,10 +12,7 @@ import ChallengeRoute from "./features/challenge/challlenge.routes";
 
 // Constant variables
 const PORT: number = parseInt(process.env.PORT, 10);
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://your-production-frontend.com",
-];
+const allowedOrigins = ["http://localhost:5173"];
 
 // Express instance
 const app = express();

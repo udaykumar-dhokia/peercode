@@ -14,9 +14,11 @@ const challengeSchema = new mongoose.Schema(
       ref: "User",
       index: true,
     },
+    duration: { type: Number, required: true },
     category: { type: String, required: true },
     difficulty: { type: String, required: true },
     question: { type: mongoose.Types.ObjectId, ref: "Question", default: null },
+    note: { type: String },
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected"],

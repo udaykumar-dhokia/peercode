@@ -7,6 +7,8 @@ class ChallengeDAO {
       to: payload.to,
       category: payload.category,
       difficulty: payload.difficulty,
+      note: payload.note,
+      duration: payload.duration,
     });
 
     return await challenge.save();

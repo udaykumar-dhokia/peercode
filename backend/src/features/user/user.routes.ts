@@ -4,6 +4,6 @@ import UserController from "./user.controller";
 const router = express.Router();
 
 router.get("/getdata", authMiddleware, UserController.getData);
-router.post("/exists", authMiddleware, UserController.exists);
+router.get("/exists", authMiddleware, UserController.exists);
 
 export default router;

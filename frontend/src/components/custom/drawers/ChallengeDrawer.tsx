@@ -10,7 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../../utils/axiosInstance";
+import { toast } from "sonner";
 
 type ChallengeDrawerProps = {
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -95,21 +97,91 @@ const minDurations: Record<string, number> = {
   Hard: 60,
 };
 
+const maxDurations: Record<string, number> = {
+  Easy: 40,
+  Medium: 60,
+  Hard: 80,
+};
+
 const ChallengeDrawer = ({ setIsDialogOpen }: ChallengeDrawerProps) => {
   const [difficulty, setDifficulty] = useState("");
   const [category, setCategory] = useState("");
   const [duration, setDuration] = useState<number>(0);
   const [opponentEmail, setOpponentEmail] = useState("");
+  const [opponentExists, setOpponentExists] = useState<boolean | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [opponentId, setOpponentId] = useState<string | null>(null);
+  const [message, setMessage] = useState<string>("");
+
+  const handleCreateChallenge = async () => {
+    if (!opponentId || !difficulty || !category) {
+      return;
+    }
+    try {
+      const payload = {
+        to: opponentId,
+        category: category,
+        difficulty: difficulty,
+        duration: duration,
+        note: message,
+      };
+      const res = await axiosInstance.post("/challenge/create", payload);
+      setIsDialogOpen(false);
+      toast.success(res.data.message);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!opponentEmail || !opponentEmail.includes("@")) {
+      setOpponentExists(null);
+      return;
+    }
+
+    const controller = new AbortController();
+    const delay = setTimeout(async () => {
+      try {
+        setChecking(true);
+        const res = await axiosInstance.get(
+          `/user/exists?email=${encodeURIComponent(opponentEmail)}`,
+          { signal: controller.signal }
+        );
+        setOpponentExists(true);
+        setOpponentId(res.data.userId);
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          setOpponentExists(false);
+          setOpponentId(null);
+        } else {
+          setOpponentExists(null);
+          setOpponentId(null);
+        }
+      } finally {
+        setChecking(false);
+      }
+    }, 500);
+
+    return () => {
+      controller.abort();
+      clearTimeout(delay);
+    };
+  }, [opponentEmail]);
 
   const handleDurationChange = (value: string) => {
     const num = Number(value);
     const min = difficulty ? minDurations[difficulty] : 0;
+    const max = difficulty ? maxDurations[difficulty] : Infinity;
+
     if (!isNaN(num)) {
-      setDuration(num < min ? min : num);
+      if (num < min) setDuration(min);
+      else if (num > max) setDuration(max);
+      else setDuration(num);
     }
   };
 
   const min = difficulty ? minDurations[difficulty] : 0;
+  const max = difficulty ? maxDurations[difficulty] : Infinity;
 
   return (
     <motion.div
@@ -140,34 +212,14 @@ const ChallengeDrawer = ({ setIsDialogOpen }: ChallengeDrawerProps) => {
             value={opponentEmail}
             onChange={(e) => setOpponentEmail(e.target.value)}
             placeholder="e.g. alex@example.com"
-            className="rounded-xl"
+            className={`rounded-xl ${!checking && opponentExists ? "border-green-600 focus-visible:ring-green-600" : ""} shadow-none focus-visible:ring-1`}
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Difficulty</Label>
-          <Select
-            value={difficulty}
-            onValueChange={(value) => {
-              setDifficulty(value);
-              setDuration(minDurations[value]); // auto-set duration
-            }}
-          >
-            <SelectTrigger className="w-full rounded-xl">
-              <SelectValue placeholder="Select difficulty" />
-            </SelectTrigger>
-            <SelectContent className="w-full">
-              {difficultyLevels.map((level) => (
-                <SelectItem key={level} value={level}>
-                  {level}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {difficulty && (
-            <p className="text-xs text-gray-500">
-              Minimum duration for <strong>{difficulty}</strong> is {min}{" "}
-              minutes.
+          {checking && (
+            <p className="text-sm text-gray-400">Checking user...</p>
+          )}
+          {!checking && opponentExists === false && (
+            <p className="text-sm text-red-500">
+              No user found with that email.
             </p>
           )}
         </div>
@@ -189,25 +241,62 @@ const ChallengeDrawer = ({ setIsDialogOpen }: ChallengeDrawerProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label>Duration (minutes)</Label>
-          <Input
-            type="number"
-            min={min}
-            disabled={!difficulty}
-            value={duration}
-            onChange={(e) => handleDurationChange(e.target.value)}
-            className="rounded-xl"
-            placeholder={
-              difficulty ? `min ${min} mins` : "Select difficulty first"
-            }
-          />
+          <Label>Difficulty</Label>
+          <Select
+            value={difficulty}
+            onValueChange={(value) => {
+              setDifficulty(value);
+              setDuration(minDurations[value]);
+            }}
+          >
+            <SelectTrigger className="w-full rounded-xl">
+              <SelectValue placeholder="Select difficulty" />
+            </SelectTrigger>
+            <SelectContent className="w-full">
+              {difficultyLevels.map((level) => (
+                <SelectItem key={level} value={level}>
+                  {level}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {difficulty && (
+            <p className="text-xs text-gray-500">
+              Minimum duration for <strong>{difficulty}</strong> is {min}{" "}
+              minutes.
+            </p>
+          )}
         </div>
+
+        <Input
+          type="number"
+          min={min}
+          max={max}
+          disabled={!difficulty}
+          value={duration}
+          onChange={(e) => handleDurationChange(e.target.value)}
+          className="rounded-xl"
+          placeholder={
+            difficulty
+              ? `between ${min}-${max} mins`
+              : "Select difficulty first"
+          }
+        />
+
+        {difficulty && (
+          <p className="text-xs text-gray-500">
+            Duration must be between <strong>{min}</strong> and{" "}
+            <strong>{max}</strong> minutes for <strong>{difficulty}</strong>{" "}
+            level.
+          </p>
+        )}
 
         <div className="space-y-2">
           <Label>Message (optional)</Label>
           <Input
             placeholder="Add a note or special instruction..."
             className="rounded-xl"
+            onChange={(e) => setMessage(e.target.value)}
           />
         </div>
       </div>
@@ -221,8 +310,11 @@ const ChallengeDrawer = ({ setIsDialogOpen }: ChallengeDrawerProps) => {
           Cancel
         </Button>
         <Button
+          onClick={handleCreateChallenge}
           className="rounded-xl bg-black/90 text-white"
-          disabled={!difficulty || !category || !opponentEmail}
+          disabled={
+            !difficulty || !category || !opponentEmail || !opponentExists
+          }
         >
           <Icons.Plus /> Challenge
         </Button>

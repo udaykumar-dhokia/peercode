@@ -19,7 +19,7 @@ const UserController = {
         .json({ message: "Unauthorized." });
     }
 
-    const { email } = req.body;
+    const email = req.query.email;
 
     if (!email) {
       return res
@@ -34,7 +34,7 @@ const UserController = {
         .json({ message: "No such user found." });
     }
 
-    return res.status(HttpStatus.OK).json({ searchUserData });
+    return res.status(HttpStatus.OK).json({ userId: searchUserData._id });
   },
 };
 

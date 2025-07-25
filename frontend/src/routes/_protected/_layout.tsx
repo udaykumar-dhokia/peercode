@@ -12,6 +12,7 @@ import { login } from "../../store/slices/user.slice";
 import { persistData } from "../../hooks/auth";
 import { useState } from "react";
 import ChallengeDrawer from "../../components/custom/drawers/ChallengeDrawer";
+import { Toaster } from "../../components/ui/sonner";
 
 export const Route = createFileRoute("/_protected/_layout")({
   component: RouteComponent,
@@ -56,6 +57,7 @@ function RouteComponent() {
         </main>
         {isDialogOpen && <ChallengeDrawer setIsDialogOpen={setIsDialogOpen} />}
       </SidebarProvider>
+      <Toaster closeButton position="top-center" className="rounded-xl" />
     </>
   );
 }
