@@ -37,6 +37,9 @@ const challengeSchema = new mongoose.Schema(
       default: "pending",
     },
     isCompleted: { type: Boolean, default: false },
+
+    byStartedAt: { type: Date, default: null },
+    toStartedAt: { type: Date, default: null },
   },
   {
     timestamps: true,

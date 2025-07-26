@@ -8,3 +8,12 @@ export const persistChallengeData = async () => {
     return null;
   }
 };
+
+export const persistQuestionData = async (id: string) => {
+  try {
+    const res = await axiosInstance.get(`/question/get/${id}`);
+    return res.data.question || null;
+  } catch (error) {
+    return null;
+  }
+};

@@ -36,10 +36,39 @@ const QuestionController = {
       const newQuestion = await questionDao.create(validation.data);
 
       return res.status(HttpStatus.OK).json({ newQuestion });
-    } catch (err) {
+    } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ message: "Failed to generate problem.", error: err.message });
+        .json({ message: "Failed to generate problem.", error: error.message });
+    }
+  },
+
+  get: async (req, res) => {
+    const user = req.user;
+    if (!user) {
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "Unauthorized." });
+    }
+    const id = req.params.id;
+    if (!id) {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: "Missing required fields.",
+      });
+    }
+    try {
+      const question = await questionDao.get({ id });
+
+      if (!question) {
+        return res.status(HttpStatus.NOT_FOUND).json({
+          message: "Question not found.",
+        });
+      }
+      return res.status(HttpStatus.OK).json({ question });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Failed to generate problem.", error: error.message });
     }
   },
 };

@@ -8,16 +8,31 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ChallengeLayoutRouteImport } from './routes/challenge/_layout'
 import { Route as PublicLayoutRouteImport } from './routes/_public/_layout'
 import { Route as ProtectedLayoutRouteImport } from './routes/_protected/_layout'
 import { Route as PublicLayoutIndexRouteImport } from './routes/_public/_layout.index'
+import { Route as ChallengeLayoutIdRouteImport } from './routes/challenge/_layout.$id'
 import { Route as PublicLayoutRegisterRouteImport } from './routes/_public/_layout.register'
 import { Route as PublicLayoutLoginRouteImport } from './routes/_public/_layout.login'
 import { Route as PublicLayoutAboutRouteImport } from './routes/_public/_layout.about'
 import { Route as ProtectedLayoutDashboardRouteImport } from './routes/_protected/_layout.dashboard'
 import { Route as ProtectedLayoutChallengesRouteImport } from './routes/_protected/_layout.challenges'
 
+const ChallengeRouteImport = createFileRoute('/challenge')()
+
+const ChallengeRoute = ChallengeRouteImport.update({
+  id: '/challenge',
+  path: '/challenge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChallengeLayoutRoute = ChallengeLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => ChallengeRoute,
+} as any)
 const PublicLayoutRoute = PublicLayoutRouteImport.update({
   id: '/_public/_layout',
   getParentRoute: () => rootRouteImport,
@@ -30,6 +45,11 @@ const PublicLayoutIndexRoute = PublicLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicLayoutRoute,
+} as any)
+const ChallengeLayoutIdRoute = ChallengeLayoutIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ChallengeLayoutRoute,
 } as any)
 const PublicLayoutRegisterRoute = PublicLayoutRegisterRouteImport.update({
   id: '/register',
@@ -60,62 +80,97 @@ const ProtectedLayoutChallengesRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/challenge': typeof ChallengeLayoutRouteWithChildren
   '/challenges': typeof ProtectedLayoutChallengesRoute
   '/dashboard': typeof ProtectedLayoutDashboardRoute
   '/about': typeof PublicLayoutAboutRoute
   '/login': typeof PublicLayoutLoginRoute
   '/register': typeof PublicLayoutRegisterRoute
+  '/challenge/$id': typeof ChallengeLayoutIdRoute
   '/': typeof PublicLayoutIndexRoute
 }
 export interface FileRoutesByTo {
+  '/challenge': typeof ChallengeLayoutRouteWithChildren
   '/challenges': typeof ProtectedLayoutChallengesRoute
   '/dashboard': typeof ProtectedLayoutDashboardRoute
   '/about': typeof PublicLayoutAboutRoute
   '/login': typeof PublicLayoutLoginRoute
   '/register': typeof PublicLayoutRegisterRoute
+  '/challenge/$id': typeof ChallengeLayoutIdRoute
   '/': typeof PublicLayoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_protected/_layout': typeof ProtectedLayoutRouteWithChildren
   '/_public/_layout': typeof PublicLayoutRouteWithChildren
+  '/challenge': typeof ChallengeRouteWithChildren
+  '/challenge/_layout': typeof ChallengeLayoutRouteWithChildren
   '/_protected/_layout/challenges': typeof ProtectedLayoutChallengesRoute
   '/_protected/_layout/dashboard': typeof ProtectedLayoutDashboardRoute
   '/_public/_layout/about': typeof PublicLayoutAboutRoute
   '/_public/_layout/login': typeof PublicLayoutLoginRoute
   '/_public/_layout/register': typeof PublicLayoutRegisterRoute
+  '/challenge/_layout/$id': typeof ChallengeLayoutIdRoute
   '/_public/_layout/': typeof PublicLayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/challenge'
     | '/challenges'
     | '/dashboard'
     | '/about'
     | '/login'
     | '/register'
+    | '/challenge/$id'
     | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/challenges' | '/dashboard' | '/about' | '/login' | '/register' | '/'
+  to:
+    | '/challenge'
+    | '/challenges'
+    | '/dashboard'
+    | '/about'
+    | '/login'
+    | '/register'
+    | '/challenge/$id'
+    | '/'
   id:
     | '__root__'
     | '/_protected/_layout'
     | '/_public/_layout'
+    | '/challenge'
+    | '/challenge/_layout'
     | '/_protected/_layout/challenges'
     | '/_protected/_layout/dashboard'
     | '/_public/_layout/about'
     | '/_public/_layout/login'
     | '/_public/_layout/register'
+    | '/challenge/_layout/$id'
     | '/_public/_layout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   ProtectedLayoutRoute: typeof ProtectedLayoutRouteWithChildren
   PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
+  ChallengeRoute: typeof ChallengeRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/challenge': {
+      id: '/challenge'
+      path: '/challenge'
+      fullPath: '/challenge'
+      preLoaderRoute: typeof ChallengeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/challenge/_layout': {
+      id: '/challenge/_layout'
+      path: '/challenge'
+      fullPath: '/challenge'
+      preLoaderRoute: typeof ChallengeLayoutRouteImport
+      parentRoute: typeof ChallengeRoute
+    }
     '/_public/_layout': {
       id: '/_public/_layout'
       path: ''
@@ -136,6 +191,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicLayoutIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
+    }
+    '/challenge/_layout/$id': {
+      id: '/challenge/_layout/$id'
+      path: '/$id'
+      fullPath: '/challenge/$id'
+      preLoaderRoute: typeof ChallengeLayoutIdRouteImport
+      parentRoute: typeof ChallengeLayoutRoute
     }
     '/_public/_layout/register': {
       id: '/_public/_layout/register'
@@ -207,9 +269,34 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
   PublicLayoutRouteChildren,
 )
 
+interface ChallengeLayoutRouteChildren {
+  ChallengeLayoutIdRoute: typeof ChallengeLayoutIdRoute
+}
+
+const ChallengeLayoutRouteChildren: ChallengeLayoutRouteChildren = {
+  ChallengeLayoutIdRoute: ChallengeLayoutIdRoute,
+}
+
+const ChallengeLayoutRouteWithChildren = ChallengeLayoutRoute._addFileChildren(
+  ChallengeLayoutRouteChildren,
+)
+
+interface ChallengeRouteChildren {
+  ChallengeLayoutRoute: typeof ChallengeLayoutRouteWithChildren
+}
+
+const ChallengeRouteChildren: ChallengeRouteChildren = {
+  ChallengeLayoutRoute: ChallengeLayoutRouteWithChildren,
+}
+
+const ChallengeRouteWithChildren = ChallengeRoute._addFileChildren(
+  ChallengeRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   ProtectedLayoutRoute: ProtectedLayoutRouteWithChildren,
   PublicLayoutRoute: PublicLayoutRouteWithChildren,
+  ChallengeRoute: ChallengeRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -81,13 +81,14 @@ const ChallengeController = {
         .json({ message: "Missing required fields." });
     }
     try {
-      const question = await generateQuestion(category, difficulty);
-      if (!question) {
+      const problem = await generateQuestion(category, difficulty);
+      if (!problem) {
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
           .json({ message: "Intenal Server Error." });
       }
-      await questionDao.create(question);
+      const question = await questionDao.create(problem);
+      console.log(question);
       const acceptedChallenge = await challengeDao.accept({
         challengeID: challengeID,
         questionID: question._id,
