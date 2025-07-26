@@ -3,6 +3,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { Types } from "mongoose";
 
 export interface ChallengeType {
+  _id?: Types.ObjectId;
   by?: Types.ObjectId;
   to?: Types.ObjectId;
   duration: number;
@@ -36,8 +37,17 @@ const challengesSlice = createSlice({
     addChallenge: (state, action: PayloadAction<ChallengeType>) => {
       state.challenges.push(action.payload);
     },
+    acceptChallenge: (state, action: PayloadAction<{ id: string }>) => {
+      const challenge = state.challenges.find(
+        (c) => c._id?.toString() === action.payload.id.toString()
+      );
+      if (challenge) {
+        challenge.status = "accepted";
+      }
+    },
   },
 });
 
-export const { setChallenges, addChallenge } = challengesSlice.actions;
+export const { setChallenges, addChallenge, acceptChallenge } =
+  challengesSlice.actions;
 export default challengesSlice.reducer;

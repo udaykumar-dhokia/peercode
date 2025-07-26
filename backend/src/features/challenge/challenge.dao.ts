@@ -20,6 +20,17 @@ class ChallengeDAO {
     const challenges = await Challenge.find({ $or: [{ by: id }, { to: id }] });
     return challenges;
   }
+
+  async accept(payload) {
+    const challenge = await Challenge.findById(payload.challengeID);
+    if (challenge.status !== "pending") {
+      throw new Error("Challenge has already been responded to");
+    }
+    challenge.question = payload.questionID;
+    challenge.status = "accepted";
+    await challenge.save();
+    return challenge;
+  }
 }
 
 export default new ChallengeDAO();

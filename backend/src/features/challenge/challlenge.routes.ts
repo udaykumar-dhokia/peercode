@@ -9,5 +9,6 @@ router.get(
   authMiddleware,
   ChallengeController.getUserChallenges
 );
+router.post("/accept", authMiddleware, ChallengeController.accept);
 
 export default router;
