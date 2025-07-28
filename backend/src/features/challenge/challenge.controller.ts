@@ -88,7 +88,6 @@ const ChallengeController = {
           .json({ message: "Intenal Server Error." });
       }
       const question = await questionDao.create(problem);
-      console.log(question);
       const acceptedChallenge = await challengeDao.accept({
         challengeID: challengeID,
         questionID: question._id,

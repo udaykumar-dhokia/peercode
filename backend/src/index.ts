@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import UserRoutes from "./features/user/user.routes";
 import QuestionRoute from "./features/question/question.routes";
 import ChallengeRoute from "./features/challenge/challlenge.routes";
+import ExecutionRoutes from "./features/execution-engine/ee.routes";
 
 // Constant variables
 const PORT: number = parseInt(process.env.PORT, 10);
@@ -42,6 +43,7 @@ app.use("/api/auth", AuthRoutes);
 app.use("/api/user", UserRoutes);
 app.use("/api/question", QuestionRoute);
 app.use("/api/challenge", ChallengeRoute);
+app.use("/api/execute", ExecutionRoutes);
 
 // Server
 const server = http.createServer(app);

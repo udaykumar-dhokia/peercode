@@ -29,12 +29,12 @@ function ChallengeLayout() {
             </span>
           </div>
           <div className="flex gap-2">
-            <Button className="rounded-xl hover:cursor-pointer hover:bg-neutral-200/50 bg-neutral-200">
+            {/* <Button className="rounded-xl hover:cursor-pointer hover:bg-neutral-200/50 bg-neutral-200">
               <Icons.Run />
             </Button>
             <Button className="rounded-xl hover:cursor-pointer hover:bg-second/50 bg-second">
               <Icons.Submit /> Submit
-            </Button>
+            </Button> */}
           </div>
         </nav>
         <div className="px-1 pt-4 rounded-xl">
