@@ -5,15 +5,16 @@ import { Icons } from "../../../assets/icons/icons";
 import { motion } from "motion/react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../store/store";
+import axiosInstance from "../../../utils/axiosInstance";
+import { toast } from "sonner";
 
 const languageOptions = [
-  { label: "JavaScript", value: "javascript", judge0Id: 63 },
   { label: "Python", value: "python", judge0Id: 71 },
   { label: "C++", value: "cpp", judge0Id: 54 },
   { label: "Java", value: "java", judge0Id: 62 },
 ];
 
-type LanguageType = "javascript" | "python" | "cpp" | "java";
+type LanguageType = "python" | "cpp" | "java";
 
 const themeOptions = [
   { label: "Dark", value: "vs-dark" },
@@ -22,27 +23,23 @@ const themeOptions = [
   { label: "High Contrast Light", value: "hc-light" },
 ];
 
-type Judge0Status = {
-  id: number;
-  description: string;
-};
-
-type Judge0Response = {
-  stdout: string | null;
-  stderr: string | null;
-  compile_output: string | null;
+type ExecutionEngineResponse = {
+  success: boolean | null;
+  code: Number | null;
+  expected_output: string | null;
   message: string | null;
-  status: Judge0Status;
+  your_output: string | null;
   time: string;
   memory: number;
-  token: string;
+  compile_output: string | null;
+  stderr: string | null;
 };
 
 export default function CodeEditor() {
-  const [language, setLanguage] = useState<LanguageType>("javascript");
+  const [language, setLanguage] = useState<LanguageType>("cpp");
   const [code, setCode] = useState("// Write your code here...");
   const [theme, setTheme] = useState<string>("vs-dark");
-  const [output, setOutput] = useState<Judge0Response | null>(null);
+  const [output, setOutput] = useState<ExecutionEngineResponse | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
   const { question } = useSelector((state: RootState) => state.question);
@@ -67,34 +64,49 @@ export default function CodeEditor() {
     const judge0LangId = selectedLang?.judge0Id;
 
     if (!judge0LangId || !question?.testCases?.length) {
-      setOutput(null);
+      setOutput({
+        success: false,
+        code: null,
+        expected_output: null,
+        message: "No test cases or language ID missing.",
+        your_output: null,
+        time: "",
+        memory: 0,
+        compile_output: null,
+        stderr: null,
+      });
+      setIsRunning(false);
       return;
     }
 
-    const { input, output: expectedOutput } = question.testCases[0];
+    const { input, output: expected_output } = question.testCases[0];
 
     try {
-      const response = await fetch(
-        "http://localhost:2358/submissions?base64_encoded=false&wait=true",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            source_code: code,
-            language_id: judge0LangId,
-            stdin: input,
-            expected_output: expectedOutput,
-          }),
-        }
-      );
+      const payload = {
+        source_code: code,
+        language_id: judge0LangId,
+        stdin: input,
+        expected_output: expected_output,
+      };
 
-      const result: Judge0Response = await response.json();
-      console.log(result);
+      const response = await axiosInstance.post("/execute/run", payload);
+      const result: ExecutionEngineResponse = response.data;
+
       setOutput(result);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Execution error:", error);
+      toast.warning(error.response.data.message);
+      setOutput({
+        success: false,
+        code: null,
+        expected_output: null,
+        message: "Something went wrong during execution.",
+        your_output: null,
+        time: "",
+        memory: 0,
+        compile_output: null,
+        stderr: null,
+      });
     } finally {
       setIsRunning(false);
     }
@@ -198,30 +210,29 @@ export default function CodeEditor() {
         <div className="mt-2">
           {!output ? (
             "Waiting for execution..."
-          ) : output.status.id === 3 ? (
-            output.stdout || "No output."
-          ) : output.status.id === 4 ? (
-            <div className="text-yellow-600 font-semibold">
-              Wrong Answer
-              <div className="mt-2 text-black font-normal">
-                <div>
-                  <strong>Expected:</strong> {question?.testCases[0].output}
-                </div>
-                <div>
-                  <strong>Your Output:</strong> {output.stdout || "No output"}
-                </div>
-              </div>
-            </div>
           ) : output.compile_output ? (
             <span className="text-red-600 font-semibold">
               {output.compile_output}
             </span>
           ) : output.stderr ? (
             <span className="text-red-600 font-semibold">{output.stderr}</span>
-          ) : output.message ? (
-            <span className="text-red-600 font-semibold">{output.message}</span>
+          ) : output.success === true ? (
+            <span className="text-green-600 font-semibold">Accepted</span>
+          ) : output.success === false ? (
+            <div className="text-yellow-600 font-semibold">
+              Wrong Answer
+              <div className="mt-2 text-black font-normal">
+                <div>
+                  <strong>Expected:</strong> {output.expected_output}
+                </div>
+                <div>
+                  <strong>Your Output:</strong>{" "}
+                  {output.your_output || "No output"}
+                </div>
+              </div>
+            </div>
           ) : (
-            "Unknown error"
+            "Unknown output status"
           )}
         </div>
       </div>

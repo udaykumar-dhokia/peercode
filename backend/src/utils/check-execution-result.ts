@@ -4,6 +4,8 @@ export function checkExecutionResult({
   stdout,
   time,
   memory,
+  compile_output,
+  stderr,
 }) {
   if (!status || !expected_output || !stdout) {
     return {
@@ -18,8 +20,11 @@ export function checkExecutionResult({
       success: true,
       code: 200,
       message: status.description,
+      expected_output,
+      your_output: stdout,
       time: time,
       memory: memory,
+      compile_output,
     };
   }
 
@@ -32,6 +37,8 @@ export function checkExecutionResult({
       your_output: stdout,
       time: time,
       memory: memory,
+      compile_output,
+      stderr,
     };
   }
 

@@ -26,7 +26,7 @@ function RouteComponent() {
   const { description, constraints, testCases } = questionState.question;
 
   return (
-    <div className="min-h-screen bg-neutral-100 p-2">
+    <div className="min-h-screen p-2">
       <div className="absolute max-w-9xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 h-full">
         {/* Left Panel - Hidden Scrollbar */}
         <div className="md:col-span-6 bg-white p-6 rounded-lg shadow overflow-y-auto max-h-full scrollbar-hide pr-2">

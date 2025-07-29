@@ -43,6 +43,8 @@ const ExecutionController = {
         stdout: response.data.stdout,
         time: response.data.time,
         memory: response.data.memory,
+        compile_output: response.data.compile_output,
+        stderr: response.data.stderr,
       });
 
       if (result.code === 400) {

@@ -1,8 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
-import { Button } from "../../components/ui/button";
-import { Icons } from "../../assets/icons/icons";
+import { Toaster } from "../../components/ui/sonner";
 
 export const Route = createFileRoute("/challenge/_layout")({
   component: ChallengeLayout,
@@ -28,18 +27,11 @@ function ChallengeLayout() {
               {question?.difficulty}
             </span>
           </div>
-          <div className="flex gap-2">
-            {/* <Button className="rounded-xl hover:cursor-pointer hover:bg-neutral-200/50 bg-neutral-200">
-              <Icons.Run />
-            </Button>
-            <Button className="rounded-xl hover:cursor-pointer hover:bg-second/50 bg-second">
-              <Icons.Submit /> Submit
-            </Button> */}
-          </div>
         </nav>
         <div className="px-1 pt-4 rounded-xl">
           <Outlet />
         </div>
+        <Toaster position="top-center" />
       </div>
     </>
   );
