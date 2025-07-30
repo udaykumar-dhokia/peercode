@@ -106,6 +106,39 @@ const ChallengeController = {
         .json({ message: "Intenal Server Error.", error });
     }
   },
+
+  start: async (req, res) => {
+    const user = req.user;
+    if (!user) {
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "Unauthorized." });
+    }
+    const { email, challengeID, duration } = req.body;
+    if (!email || !challengeID || !duration) {
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: "Missing required fields." });
+    }
+    try {
+      const payload = {
+        email: email,
+        duration: duration,
+        challengeID: challengeID,
+      };
+      const challenge = await challengeDao.start(payload);
+      if (!challenge) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: "Internal Server Error." });
+      }
+      return res.status(HttpStatus.OK).json({ message: "Challenge Started." });
+    } catch (error) {
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: "Intenal Server Error.", error });
+    }
+  },
 };
 
 export default ChallengeController;

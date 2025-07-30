@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import { Types } from "mongoose";
 
-export interface ChallengeType {
+export type ChallengeType = {
   _id?: Types.ObjectId;
   by?: Types.ObjectId;
   to?: Types.ObjectId;
@@ -17,7 +17,15 @@ export interface ChallengeType {
   updatedAt?: Date;
   toEmail: string;
   byEmail: string;
-}
+  byStats?: {
+    startedAt?: Date;
+    endsAt?: Date;
+  };
+  toStats?: {
+    startedAt?: Date;
+    endsAt?: Date;
+  };
+};
 
 interface ChallengeState {
   challenges: ChallengeType[];

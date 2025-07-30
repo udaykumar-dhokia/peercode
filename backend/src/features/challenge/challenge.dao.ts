@@ -31,6 +31,36 @@ class ChallengeDAO {
     await challenge.save();
     return challenge;
   }
+
+  async start(payload) {
+    const challenge = await Challenge.findById(payload.challengeID);
+    if (!challenge) {
+      return null;
+    }
+
+    const startDate = new Date();
+    const endDate = new Date(
+      startDate.getTime() + challenge.duration * 60 * 1000
+    );
+
+    if (challenge.byEmail === payload.email) {
+      challenge.byStats.startedAt = startDate;
+      challenge.byStats.endsAt = endDate;
+    } else if (challenge.toEmail === payload.email) {
+      challenge.toStats.startedAt = startDate;
+      challenge.toStats.endsAt = endDate;
+    } else {
+      throw new Error("User is not part of this challenge");
+    }
+
+    await challenge.save();
+
+    return {
+      startedAt: startDate,
+      endsAt: endDate,
+      duration: challenge.duration,
+    };
+  }
 }
 
 export default new ChallengeDAO();

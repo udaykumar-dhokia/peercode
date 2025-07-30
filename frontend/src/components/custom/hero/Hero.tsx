@@ -15,7 +15,7 @@ const Hero = () => {
             }}
             className="font-bold text-6xl"
           >
-            Level Up Your Coding Skills with{" "}
+            Level Up Your Coding Skills with <br />
             <span className="text-second"> 1-to-1</span> Challenges
           </motion.h1>
 

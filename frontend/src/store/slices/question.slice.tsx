@@ -19,10 +19,12 @@ export type QuestionType = {
 
 export interface QuestionState {
   question: QuestionType | null;
+  isLoading: boolean;
 }
 
 const initialState: QuestionState = {
   question: null,
+  isLoading: false,
 };
 
 const questionSlice = createSlice({
@@ -35,8 +37,11 @@ const questionSlice = createSlice({
     clearQuestion: (state) => {
       state.question = null;
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
   },
 });
 
-export const { setQuestion, clearQuestion } = questionSlice.actions;
+export const { setQuestion, clearQuestion, setLoading } = questionSlice.actions;
 export default questionSlice.reducer;

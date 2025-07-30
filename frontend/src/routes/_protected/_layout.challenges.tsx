@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import {
@@ -19,6 +19,8 @@ import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "sonner";
 import { useState } from "react";
 import AcceptChallenge from "../../components/custom/dialogs/AcceptChallenge";
+import StartChallengeDailog from "../../components/custom/dialogs/StartChallengeDailog";
+import CountdownTimer from "../../components/custom/timer/CountdownTimer";
 
 export const Route = createFileRoute("/_protected/_layout/challenges")({
   component: Challenges,
@@ -30,7 +32,6 @@ function Challenges() {
   const [isAccepting, setIsAccepting] = useState<boolean>(false);
   const [challengeID, setChallengeID] = useState();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const activeChallenges =
     challengesData?.challenges?.filter(
@@ -136,7 +137,7 @@ function Challenges() {
                 {stat.title}
               </h2>
             </div>
-            <p className="text-4xl font-bold text-right text-second">
+            <p className="text-5xl font-bold text-right bg-gradient-to-b from-second/70 to-second bg-clip-text text-transparent">
               {stat.value ?? 0}
             </p>
           </div>
@@ -370,18 +371,30 @@ function Challenges() {
                             “{challenge.note}”
                           </p>
                         )}
-                        <Button
-                          variant={"default"}
-                          className="hover:cursor-pointer mt-4 rounded-xl bg-blue-600 hover:bg-blue-700 transition-all"
-                          onClick={() =>
-                            navigate({ to: `/challenge/${challenge.question}` })
-                          }
-                        >
-                          Start
-                          <motion.div whileHover={{ x: 2 }} className="">
-                            <Icons.RightArrow />
-                          </motion.div>
-                        </Button>
+                        <div className="flex items-center justify-between">
+                          <div className="mt-4">
+                            {(() => {
+                              const isSender =
+                                challenge.byEmail === userData.user?.email;
+                              const startedAt = isSender
+                                ? challenge.byStats?.startedAt
+                                : challenge.toStats?.startedAt;
+
+                              return startedAt ? (
+                                <CountdownTimer
+                                  start={startedAt}
+                                  duration={challenge.duration}
+                                />
+                              ) : null;
+                            })()}
+                          </div>
+
+                          <StartChallengeDailog
+                            duration={challenge.duration}
+                            challenge={challenge}
+                            email={userData.user?.email}
+                          />
+                        </div>
                       </motion.div>
                     )
                   )}

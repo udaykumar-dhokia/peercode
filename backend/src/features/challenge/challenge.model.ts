@@ -38,8 +38,14 @@ const challengeSchema = new mongoose.Schema(
     },
     isCompleted: { type: Boolean, default: false },
 
-    byStartedAt: { type: Date, default: null },
-    toStartedAt: { type: Date, default: null },
+    byStats: {
+      startedAt: { type: Date, default: null },
+      endsAt: { type: Date, default: null },
+    },
+    toStats: {
+      startedAt: { type: Date, default: null },
+      endsAt: { type: Date, default: null },
+    },
   },
   {
     timestamps: true,
